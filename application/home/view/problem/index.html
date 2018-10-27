@@ -1,0 +1,44 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">{$title}</h3>
+        <a href="{:url('home/problem/create')}" class="btn btn-success">增加新问题</a>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Striped Row</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>问题</th>
+                                <th>提出人</th>
+                                <th>解决时间期限</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="data" id="vo"}
+                            <tr>
+                                <td>{$vo.problem_info}</td>
+                                <td>{$vo.propose}</td>
+                                <td>{$vo.solve_time}</td>
+                                <td>
+                                    <a href="{:url('home/problem/show',['id' => $vo.id])}" class="btn btn-success">查看</a>
+                                    <a href="{:url('home/problem/delete',['id' => $vo.id])}" class="btn btn-danger">删除</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                        {$data->render()}
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

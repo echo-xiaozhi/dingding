@@ -1,0 +1,168 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">{$title}</h3>
+        <a href="{:url('home/toexcel/to_excel')}" class="btn btn-success">导出</a>
+        <style>
+            body{
+                font-family: "微软雅黑";
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+            }
+            table{
+                border-collapse:collapse;
+            }
+            th, td{
+                border: 1px solid #BDD7EE;
+                text-align: center;
+            }
+        </style>
+        <table width="1440">
+            <tr>
+                <th colspan="12" style="font-size: 22px;">山东锦尚网络科技有限公司（运营部）周报</th>
+            </tr>
+            <tr>
+                <th colspan="12" style="font-size: 12px;">填报单位:____________ 填报人:_______ 审阅人：_______ 填报时间___月 第___周  (____年__月__日-____年__月__日)</th>
+            </tr>
+            <tr>
+                <th colspan="12" style="background-color: #BDD7EE;">本周计划完成情况</th>
+            </tr>
+            <tr>
+                <th>序号</th>
+                <th style="width: 50px;">类型</th>
+                <th>计划任务</th>
+                <th>完成输出物</th>
+                <th>计划开始时间</th>
+                <th>计划完成时间</th>
+                <th>优先级</th>
+                <th>完成度</th>
+                <th>负责人</th>
+                <th>参与人</th>
+                <th>核查人</th>
+                <th>问题备注</th>
+            </tr>
+            {volist name="pjournal" id="vo"}
+            <tr>
+                <td>{$i}</td>
+                {if condition="$i eq 1"} <td rowspan="{:count($pjournal, 0)}">计划任务</td> {/if}
+                <td>{$vo.title}</td>
+                {if condition="!empty($vo.complete)"}
+                <td>{$_SERVER['HTTP_HOST'].$vo.complete}</td>
+                {else/}
+                <td></td>
+                {/if}
+                {if condition="!empty($vo.timestart) && !empty($vo.timend)"}
+                <td>{:date('Y-m-d', $vo.timestart)}</td>
+                <td>{:date('Y-m-d', $vo.timend)}</td>
+                {else/}
+                <td></td>
+                <td></td>
+                {/if}
+                <td>{$vo.priority}</td>
+                <td>{$vo.complate}</td>
+                <td>{$vo.charge}</td>
+                <td>{$vo.partake}</td>
+                <td>{$vo.check}</td>
+                <td>{$vo.remark}</td>
+            </tr>
+            {/volist}
+            {volist name="tjournal" id="vo"}
+            <tr>
+                <td>{$i}</td>
+                {if condition="$i eq 1"} <td rowspan="{:count($tjournal, 0)}">临时任务</td> {/if}
+                <td>{$vo.title}</td>
+                {if condition="!empty($vo.complete)"}
+                <td>{$_SERVER['HTTP_HOST'].$vo.complete}</td>
+                {else/}
+                <td></td>
+                {/if}
+                {if condition="!empty($vo.timestart) && !empty($vo.timend)"}
+                <td>{:date('Y-m-d', $vo.timestart)}</td>
+                <td>{:date('Y-m-d', $vo.timend)}</td>
+                {else/}
+                <td></td>
+                <td></td>
+                {/if}
+                <td>{$vo.priority}</td>
+                <td>{$vo.complate}</td>
+                <td>{$vo.charge}</td>
+                <td>{$vo.partake}</td>
+                <td>{$vo.check}</td>
+                <td>{$vo.remark}</td>
+            </tr>
+            {/volist}
+            <tr>
+                <th colspan="12" style="background-color: #E2F0D9;">下周工作计划安排</th>
+            </tr>
+            <tr>
+                <th>序号</th>
+                <th style="width: 50px;">类型</th>
+                <th>计划任务</th>
+                <th>完成输出物</th>
+                <th>计划开始时间</th>
+                <th>计划完成时间</th>
+                <th>优先级</th>
+                <th>完成度</th>
+                <th>负责人</th>
+                <th>参与人</th>
+                <th>核查人</th>
+                <th>问题备注</th>
+            </tr>
+            {volist name="plan" id="vo"}
+            <tr>
+                <td>{$i}</td>
+                {if condition="$i eq 1"} <td rowspan="{:count($plan, 0)}">计划任务</td> {/if}
+                <td>{$vo.plan_info}</td>
+                {if condition="!empty($vo.complete)"}
+                <td>{$_SERVER['HTTP_HOST'].$vo.complete}</td>
+                {else/}
+                <td></td>
+                {/if}
+                <td>{$vo.start_time}</td>
+                <td>{$vo.end_time}</td>
+                <td>{$vo.priority}</td>
+                <td>{$vo.complate}</td>
+                <td>{$vo.charge}</td>
+                <td>{$vo.partake}</td>
+                <td>{$vo.check}</td>
+                <td>{$vo.remark}</td>
+            </tr>
+            {/volist}
+            <tr>
+                <th colspan="12" style="background-color: #FBE5D6;">出现的问题以及解决方案</th>
+            </tr>
+            <tr>
+                <th>编号</th>
+                <th colspan="4">问题描述</th>
+                <th colspan="3">提出人</th>
+                <th>责任人</th>
+                <th>解决时间期限</th>
+                <th colspan="3">工作组成员</th>
+            </tr>
+            {volist name="problem" id="vo"}
+            <tr>
+                <td>{$i}</td>
+                <td colspan="4">{$vo.problem_info}</td>
+                <td colspan="3">{$vo.propose}</td>
+                <td>{$vo.person}</td>
+                <td>{$vo.solve_time}</td>
+                <td colspan="3">{$vo.work_people}</td>
+            </tr>
+            {/volist}
+            <tr>
+                <td>说明</td>
+                <td colspan="11" style="text-align: left;">
+                    1.在制定计划时必须与直接责任人沟通具体安排，产出定义以及具体执行时间。<br />
+                    2.多人协同完成的工作，责任人只能有一人，必须明确责任。<br />
+                    3.重点项：<br />
+                    （1）完成输出物：必须为具体文件(包含但不仅限于：文本/图片/代码等)<br />
+                    (2)  优先级依次为：A:重要紧急B:紧急但不重要C:重要但不紧急D:一般性E:自主性<br />
+                    (3)  完成度：任务未开始（0%），任务执行中(n%),任务执行完成(完成日期)<br />
+                    4.组长严密把控和跟踪任务过程，及时发现问题及时解决，完成后认真核查，客观考核。<br />
+                    5.任务出现延迟，必须有备注原因和问题解决情况。<br />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

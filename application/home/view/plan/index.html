@@ -1,0 +1,46 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">下周任务列表</h3>
+        <a href="{:url('home/plan/create')}" class="btn btn-success">编写新计划任务</a>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Striped Row</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>任务</th>
+                                <th>完成度</th>
+                                <th>计划开始时间</th>
+                                <th>预计结束时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="data" id="vo"}
+                            <tr>
+                                <td>{$vo.plan_info}</td>
+                                <td>{$vo.complate}</td>
+                                <td>{$vo.start_time}</td>
+                                <td>{$vo.end_time}</td>
+                                <td>
+                                    <a href="{:url('home/plan/show',['id' => $vo.id])}" class="btn btn-success">查看</a>
+                                    <a href="{:url('home/plan/delete',['id' => $vo.id])}" class="btn btn-danger">删除</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                        {$data->render()}
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

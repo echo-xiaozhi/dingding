@@ -1,0 +1,69 @@
+{layout name="layout/main" /}
+<?php
+    if (!empty($user['ding_nick'])) {
+?>
+<style>
+    .img-upload{
+        width: 90px;
+        height: 90px;
+        margin: 0 auto;
+    }
+    .img-upload img{
+        width: 100%;
+    }
+</style>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="panel panel-profile">
+            <div class="clearfix">
+                <!-- LEFT COLUMN -->
+                <div class="col-md-12">
+                    <!-- PROFILE HEADER -->
+                    <div class="profile-header">
+                        <div class="overlay"></div>
+                        <div class="profile-main">
+                            <div class="img-upload" style="width: 90px; height: 90px; margin: 0 auto;">
+                                <img src="{if condition="!empty($user['user_img'])"} {$user.user_img} {else/}/style/img/user-medium.png{/if}" class="img-circle" id="pic" style="cursor:pointer;">
+                                <input id="upload" name="file" accept="image/*" type="file" style="display: none">
+                            </div>
+
+                            <h3 class="name">{$user->ding_nick}</h3>
+                            <span class="online-status status-available">在线</span>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="row">
+                                <div class="col-md-4 stat-item">
+                                    {$weekJournalCount} <span>本周日报总数</span>
+                                </div>
+                                <div class="col-md-4 stat-item">
+                                    {$monthJournalCount} <span>本月日报总数</span>
+                                </div>
+                                <div class="col-md-4 stat-item">
+                                    {$journalCount} <span>共计日报总数</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PROFILE HEADER -->
+                    <!-- PROFILE DETAIL -->
+                    <!-- END PROFILE DETAIL -->
+                </div>
+                <!-- END LEFT COLUMN -->
+                <!-- RIGHT COLUMN -->
+                <!-- END RIGHT COLUMN -->
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+    } else {
+?>
+<div>
+    请先扫码绑定钉钉账户
+    <a href="https://oapi.dingtalk.com/connect/qrconnect?appid=dingoaemq5dfgda22dqly4&response_type=code&scope=snsapi_login&state=STATE&redirect_uri=http://dingding.l/user/bindDing">
+        扫码绑定钉钉
+    </a>
+</div>
+<?php
+    }
+?>

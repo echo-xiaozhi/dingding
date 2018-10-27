@@ -1,0 +1,44 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">{$title}</h3>
+        <a href="{:url('home/report/times')}" class="btn btn-success">导入日报</a>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{$title}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>任务</th>
+                                <th>完成度</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="data" id="vo"}
+                            <tr>
+                                <td>{$vo.create_times}</td>
+                                <td>{$vo.title}</td>
+                                <td>{$vo.complate}</td>
+                                <td>
+                                    <a href="{:url('home/pjournal/show',['id' => $vo['id']])}" class="btn btn-success">查看</a>
+                                    <a href="{:url('home/pjournal/delete', ['id' => $vo['id']])}" class="btn btn-danger">删除</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                        {$data->render()}
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

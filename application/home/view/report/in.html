@@ -1,0 +1,33 @@
+{layout name='layout/main'}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">导入日报</h3>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <form action="{:url('home/report/add')}" method="post">
+                                <label for="">选择时间（精确到时分）<span style="color: red;">时间段不能超过180天</span></label>
+                                {if condition="empty($time)"}
+                                <input type="text" id="start_time" name="start_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
+                                --
+                                <input type="text" id="end_time" name="end_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
+                                <!--<input type="datetime-local" name="start_time"> &#45;&#45; <input type="datetime-local" name="end_time">-->
+                                {else/}
+                                <input type="text" value="{$time}" id="start_time" name="start_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
+                                --
+                                <input type="text" id="end_time" name="end_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
+                                {/if}
+                                <br>
+                                <label for="">请输入想要获取日报的条数</label>
+                                <input type="text" name="num" value="10">
+                                <button class="btn btn-success">提交</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

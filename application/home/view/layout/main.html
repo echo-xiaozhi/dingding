@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>{$title}</title>
+    {include file="layout/header" /}
+</head>
+
+<body>
+<!-- WRAPPER -->
+<div id="wrapper">
+    <!-- NAVBAR -->
+    {include file="layout/nav" /}
+    <!-- END NAVBAR -->
+    <!-- LEFT SIDEBAR -->
+    {include file="layout/sidebar" /}
+    <!-- END LEFT SIDEBAR -->
+    <!-- MAIN -->
+    <div class="main">
+        {__CONTENT__}
+    </div>
+    <!-- END MAIN -->
+    <div class="clearfix"></div>
+    {include file="layout/footer" /}
+</div>
+<!-- END WRAPPER -->
+<!-- Javascript -->
+{include file="layout/script" /}
+</body>
+
+</html>

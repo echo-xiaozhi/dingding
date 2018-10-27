@@ -1,0 +1,87 @@
+<script src="/style/vendor/jquery/jquery.min.js"></script>
+<script src="/style/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/style/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/style/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js"></script>
+<script src="/style/vendor/chartist/js/chartist.min.js"></script>
+<script src="/style/scripts/klorofil-common.js"></script>
+<script src="/style/scripts/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/style/scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="/style/scripts/cropper.js"></script>
+<script>
+    $('#dis').click(function () {
+        $('#show').show();
+        $('#dis').hide();
+    })
+    $('#all').click(function () {
+        if (this.checked == true) {
+            $('.checkbox').prop('checked',true);
+        } else {
+            $('.checkbox').prop('checked',false);
+        }
+    })
+    $('.checkbox').click(function () {
+        if (this.checked == false) {
+            $('#all').prop('checked',false);
+        }
+    })
+    // $('#imgclick').click(function () {
+    //     $('#doc').click()
+    //     $('.files').show();
+    // })
+    $(function() {
+        $("#pic").click(function() {
+            $("#upload").click(); //隐藏了input:file样式后，点击头像就可以本地上传
+            $("#upload").on("change", function() {
+                var objUrl = getObjectURL(this.files[0]); //获取图片的路径，该路径不是图片在本地的路径
+                if (objUrl) {
+                    $("#pic").attr("src", objUrl); //将图片路径存入src中，显示出图片
+                    upimg();
+                }
+            });
+        });
+    });
+
+    //建立一?可存取到?file的url
+    function getObjectURL(file) {
+        var url = null;
+        if (window.createObjectURL != undefined) { // basic
+            url = window.createObjectURL(file);
+        } else if (window.URL != undefined) { // mozilla(firefox)
+            url = window.URL.createObjectURL(file);
+        } else if (window.webkitURL != undefined) { // webkit or chrome
+            url = window.webkitURL.createObjectURL(file);
+        }
+        return url;
+    }
+    //上传头像到服务器
+    function upimg() {
+        console.log(344)
+        var pic = $('#upload')[0].files[0];
+        var file = new FormData();
+        file.append('image', pic);
+        $.ajax({
+            url: "/user/setuserimg",
+            type: "post",
+            data: file,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.error != 0) {
+                    alert(data.msg);
+                }
+                var res = data;
+                $("#resimg").append("<img src='/" + res + "'>")
+            }
+        });
+    }
+</script>
+<!-- 时间控件 -->
+<script>
+    $('#start_time').datetimepicker({
+        language: "zh-CN"
+    });
+    $('#end_time').datetimepicker({
+        language: "zh-CN"
+    });
+</script>

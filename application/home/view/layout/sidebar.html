@@ -1,0 +1,31 @@
+<div id="sidebar-nav" class="sidebar">
+    <div class="sidebar-scroll">
+        <nav>
+            <ul class="nav">
+                <li><a href="/" class="active"><i class="lnr lnr-home"></i> <span>主页</span></a></li>
+                <li><a href="{:url('home/user/index')}" class=""><i class="lnr lnr-cog"></i> <span>个人中心设置</span></a></li>
+                <li><a href="{:url('home/report/times')}" class=""><i class="lnr lnr-dice"></i> <span>导入日报</span></a></li>
+                <li>
+                    <a href="#ribao" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i> <span>日报列表</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div id="ribao" class="collapse ">
+                        <ul class="nav">
+                            <li><a href="{:url('home/pjournal/index')}" class="">计划任务</a></li>
+                            <li><a href="{:url('home/tjournal/index')}" class="">临时任务</a></li>
+                            <li><a href="{:url('home/plan/index')}">下周计划任务</a></li>
+                            <li><a href="{:url('home/problem/index')}">本周问题</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="#download" data-toggle="collapse" class="collapsed"><i class="lnr lnr-download"></i> <span>导出报表</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                    <div id="download" class="collapse ">
+                        <ul class="nav">
+                            <li><a href="{:url('home/toexcel/index')}" class="">导出周报</a></li>
+                            <li><a href="{:url('home/toexcel/mouth')}" class="">导出月报</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

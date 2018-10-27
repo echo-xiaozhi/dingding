@@ -1,0 +1,56 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">选择要提交的日报</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Striped Row</h3>
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="all">
+                            <span>全选</span>
+                        </label>
+                    </div>
+                    <div class="panel-body">
+                        <form action="{:url('home/report/addnext')}" method="post">
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>工作任务</th>
+                                    <!--<th>附件</th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="user_data_list" id="vo"}
+                                <!-- 日期、创建人 -->
+                                <input type="hidden" name="creator_name" value="{$vo.creator_name}">
+                                <tr>
+                                    <td>{:date('Y-m-d H:i:s', $vo.create_time/1000)}</td>
+                                    <td>
+                                        {volist name="vo.contents" id="v"}
+                                        <p>{$v.key}：{$v.value}
+                                            <label class="fancy-checkbox">
+                                                <input type="checkbox" class="checkbox" name="permissions[]" value="{$v.value}+{:date('Y-m-d H:i:s', $vo.create_time/1000)}">
+                                                <span>选择</span>
+                                            </label>
+                                        </p>
+                                        {/volist}
+                                    </td>
+                                    <!--<td>文件地址</td>-->
+                                </tr>
+                                {/volist}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-success">下一步</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

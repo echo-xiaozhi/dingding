@@ -1,0 +1,57 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">编写新的下周计划</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">新增</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form action="{:url('home/plan/add', ['id' => session('user')->id])}" method="post" enctype="multipart/form-data">
+                            <label for="">任务名称</label>
+                            <input type="text" name="plan_info" class="form-control" placeholder="请输入任务名称">
+                            <br>
+                            <label for="">完成输出物</label>
+                            <input type="file" name="complete">
+                            <br>
+                            <label for="">任务开始时间</label>
+                            <input type="date" name="start_time">
+                            <br>
+                            <label for="">预计任务结束时间</label>
+                            <input type="date" name="end_time">
+                            <br>
+                            <label for="">任务优先级</label>
+                            <input type="radio" name="priority" value="A" checked>A
+                            <input type="radio" name="priority" value="B">B
+                            <input type="radio" name="priority" value="C">C
+                            <input type="radio" name="priority" value="D">D
+                            <input type="radio" name="priority" value="E">E
+                            <br>
+                            <label for="">完成度</label>
+                            <input type="text" class="form-control" name="complate" placeholder="例如10%">
+                            <br>
+                            <label for="">负责人</label>
+                            <input type="text" class="form-control" name="charge" placeholder="请输入负责人">
+                            <br>
+                            <label for="">参与人</label>
+                            <input type="text" class="form-control" name="partake" placeholder="请输入参与人">
+                            <br>
+                            <label for="">核查人</label>
+                            <input type="text" class="form-control" name="check" placeholder="请输入核查人">
+                            <br>
+                            <label for="">问题备注</label>
+                            <textarea class="form-control" name="remark" placeholder="请简单描述问题备注" rows="4"></textarea>
+                            <br>
+                            <button type="submit" class="btn btn-success">提交</button>
+                            <button type="reset" class="btn btn-danger">重置</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

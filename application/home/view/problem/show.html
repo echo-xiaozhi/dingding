@@ -1,0 +1,41 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">{$title}</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">查看及修改</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form action="{:url('home/problem/edit', ['id' => $data.id])}" method="post">
+                            <label for="">问题描述</label>
+                            <textarea class="form-control" name="problem_info" placeholder="请简单描述问题备注" rows="4">{$data.problem_info}</textarea>
+                            <br>
+                            <label for="">问题提出人</label>
+                            <input type="text" class="form-control" name="propose" placeholder="请输入问题提出人" value="{$data.propose}">
+                            <br>
+                            <label for="">负责人</label>
+                            <input type="text" class="form-control" name="person" placeholder="请输入负责人" value="{$data.person}">
+                            <br>
+                            <label for="">解决时间期限</label>
+                            <input type="text" class="form-control" name="solve_time" placeholder="例如3天或2小时" value="{$data.solve_time}">
+                            <br>
+                            <label for="">工作组其他参与成员</label>
+                            <input type="text" class="form-control" name="work_people" placeholder="请输入其他参与人员" value="{$data.work_people}">
+                            <br>
+                            <label for="">问题解决方案</label>
+                            <textarea class="form-control" name="programme" placeholder="请输入问题解决方案" rows="4">{$data.programme}</textarea>
+                            <br>
+                            <button type="submit" class="btn btn-success">修改</button>
+                            <a href="{:url('home/problem/index')}" class="btn btn-danger">返回</a>
+                        </form>
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

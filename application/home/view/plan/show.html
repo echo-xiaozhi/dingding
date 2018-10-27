@@ -1,0 +1,59 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">任务详情</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">修改</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form action="{:url('home/plan/edit', ['id' => $data.id])}" method="post" enctype="multipart/form-data">
+                            <label for="">任务名称</label>
+                            <input type="text" name="plan_info" class="form-control" value="{$data.plan_info}" placeholder="请输入任务名称">
+                            <br>
+                            <label for="">完成输出物</label>
+                            <a href="{$data.complete}" target="_blank">点击查看</a>
+                            <button type="button" class="btn btn-primary" id="dis">替换</button>
+                            <input type="file" name="complete" id="show" style="display: none;">
+                            <br>
+                            <label for="">任务开始时间</label>
+                            <input type="date" name="start_time" value="{$data.start_time}">
+                            <br>
+                            <label for="">预计任务结束时间</label>
+                            <input type="date" name="end_time" value="{$data.end_time}">
+                            <br>
+                            <label for="">任务优先级</label>
+                            <input type="radio" name="priority" value="A"{if condition="$data.priority eq 'A'"} checked{/if}>A
+                            <input type="radio" name="priority" value="B"{if condition="$data.priority eq 'B'"} checked{/if}>B
+                            <input type="radio" name="priority" value="C"{if condition="$data.priority eq 'C'"} checked{/if}>C
+                            <input type="radio" name="priority" value="D"{if condition="$data.priority eq 'D'"} checked{/if}>D
+                            <input type="radio" name="priority" value="E"{if condition="$data.priority eq 'E'"} checked{/if}>E
+                            <br>
+                            <label for="">完成度</label>
+                            <input type="text" class="form-control" name="complate" value="{$data.complate}" placeholder="例如10%">
+                            <br>
+                            <label for="">负责人</label>
+                            <input type="text" class="form-control" name="charge" value="{$data.charge}" placeholder="请输入负责人">
+                            <br>
+                            <label for="">参与人</label>
+                            <input type="text" class="form-control" name="partake" value="{$data.partake}" placeholder="请输入参与人">
+                            <br>
+                            <label for="">核查人</label>
+                            <input type="text" class="form-control" name="check" value="{$data.check}" placeholder="请输入核查人">
+                            <br>
+                            <label for="">问题备注</label>
+                            <textarea class="form-control" name="remark" placeholder="请简单描述问题备注" rows="4">{$data.remark}</textarea>
+                            <br>
+                            <button type="submit" class="btn btn-success">修改</button>
+                            <a href="{:url('home/plan/index')}" class="btn btn-danger">返回</a>
+                        </form>
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">{$title}</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">新增</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form action="{:url('home/problem/add', ['id' => session('user')->id])}" method="post">
+                            <label for="">问题描述</label>
+                            <textarea class="form-control" name="problem_info" placeholder="请简单描述问题" rows="4"></textarea>
+                            <br>
+                            <label for="">问题提出人</label>
+                            <input type="text" class="form-control" name="propose" placeholder="请输入问题提出人">
+                            <br>
+                            <label for="">负责人</label>
+                            <input type="text" class="form-control" name="person" placeholder="请输入负责人">
+                            <br>
+                            <label for="">解决时间期限</label>
+                            <input type="text" class="form-control" name="solve_time" placeholder="例如3天或2小时">
+                            <br>
+                            <label for="">工作组其他参与成员</label>
+                            <input type="text" class="form-control" name="work_people" placeholder="请输入其他参与人员">
+                            <br>
+                            <label for="">问题解决方案</label>
+                            <textarea class="form-control" name="programme" placeholder="请输入问题解决方案" rows="4"></textarea>
+                            <br>
+                            <button type="submit" class="btn btn-success">提交</button>
+                            <button type="reset" class="btn btn-danger">重置</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>
