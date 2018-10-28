@@ -157,6 +157,31 @@ class User extends Model
     }
 
     /*
+     * 用户登录
+     */
+    public function login($data)
+    {
+        $validate = new Validate([
+            ['username', 'require|min:3|max:15', '请输入用户名|不得少于3位|不得大于15位'],
+            ['password', 'require|min:6|max:30', '请输入密码|不得少于6位|不得大于15位'],
+        ]);
+
+        if (!$validate->check($data)) {
+            return $validate->getError();
+        }
+
+        $password = md5($data['password']);
+
+        $result = self::get(['username' => $data['username'], 'password' => $password]);
+        if (!$result) {
+            return '用户名密码错误';
+        }
+        session('user', $result);
+
+        return 'success';
+    }
+
+    /*
      * 绑定钉钉
      */
     public function bindDing($code)

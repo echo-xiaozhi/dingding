@@ -4,7 +4,6 @@ namespace app\home\controller;
 
 use app\home\model\User;
 use think\Controller;
-use think\Validate;
 
 class Login extends Controller
 {
@@ -27,25 +26,12 @@ class Login extends Controller
     {
         if (request()->isPost()) {
             $data = input('post.');
-            $validate = new Validate([
-                ['username', 'require|min:3|max:15', '请输入用户名|不得少于3位|不得大于15位'],
-                ['password', 'require|min:6|max:30', '请输入密码|不得少于6位|不得大于15位'],
-            ]);
-
-            if (!$validate->check($data)) {
-                $this->error($validate->getError(), 'login/index');
+            $userModel = new User();
+            $result = $userModel->login($data);
+            if ('success' == $result) {
+                $this->success('登录成功', 'index/index');
             }
-
-            $password = md5($data['password']);
-
-            $result = User::get(['username' => $data['username'], 'password' => $password]);
-
-            if (!$result) {
-                $this->error('用户名密码错误', 'login/index');
-            }
-
-            session('user', $result);
-            $this->success('登录成功', 'index/index');
+            $this->error($result, 'index');
         }
     }
 
