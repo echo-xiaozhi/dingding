@@ -12,10 +12,10 @@
                     <div class="panel-body">
                         <form action="{:url('home/tjournal/edit', ['id' => $data.id])}" method="post" enctype="multipart/form-data">
                             <label for="">钉钉日期</label>
-                            <input type="text" name="plan_info" class="form-control" value="{$data.create_times}" disabled>
+                            <input type="text" name="create_times" class="form-control" value="{$data.create_times}" disabled>
                             <br>
                             <label for="">任务名称</label>
-                            <input type="text" name="plan_info" class="form-control" value="{$data.title}" placeholder="请输入任务名称">
+                            <input type="text" name="title" class="form-control" value="{$data.title}" placeholder="请输入任务名称">
                             <br>
                             <label for="">完成输出物</label>
                             {if condition="!empty($data.complete)"}

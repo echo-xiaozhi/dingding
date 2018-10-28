@@ -42,7 +42,7 @@ class Pjournal extends Base
         $data = input('post.');
         $file = request()->file('complete');
         $pjournalModel = new PjournalModel();
-        $pjournalModel->edit($id, $data, $file);
+        $result = $pjournalModel->edit($id, $data, $file);
 
         $this->success('修改成功', 'pjournal/index');
     }

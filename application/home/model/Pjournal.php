@@ -56,7 +56,8 @@ class Pjournal extends Model
             'id' => $id,
         ];
 
-        self::update($data, $where);
+        $result = self::update($data, $where);
+        return $result;
     }
 
     /*
