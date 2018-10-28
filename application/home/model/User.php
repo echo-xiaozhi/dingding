@@ -4,6 +4,7 @@ namespace app\home\model;
 
 use think\Model;
 use app\Upload\Upload;
+use think\Validate;
 
 class User extends Model
 {
@@ -135,6 +136,12 @@ class User extends Model
             return '重复输入密码不一致';
         }
 
+        $validate = new Validate([
+            ['password', 'require|min:6|max:30', '请输入密码|不得少于6位|不得大于15位'],
+        ]);
+        if (!$validate->check($data)) {
+            return $validate->getError();
+        }
         $data = [
             'password' => md5($data['password']),
         ];
