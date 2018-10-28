@@ -87,7 +87,7 @@ class Problem extends Model
 //        return $power['id'];
         if ($power) {
             self::destroy($id);
-            $userProblem= new UserProblem();
+            $userProblem = new UserProblem();
             $userProblem->where('problem_id', 'eq', $power['id'])->delete();
 
             return 'success';

@@ -2,7 +2,6 @@
 
 namespace app\home\controller;
 
-use think\Db;
 use app\home\model\Problem as ProblemModel;
 
 class Problem extends Base
@@ -49,7 +48,7 @@ class Problem extends Base
         $data = input('post.');
         $problemModel = new ProblemModel();
         $data = $problemModel->editProblem($id, $data);
-        if ($data == 'success') {
+        if ('success' == $data) {
             $this->success('修改成功', 'problem/index');
         }
 
@@ -63,8 +62,8 @@ class Problem extends Base
     {
         $title = '问题详情';
 
-       $problemModel = new ProblemModel();
-       $data = $problemModel->showProblem($id);
+        $problemModel = new ProblemModel();
+        $data = $problemModel->showProblem($id);
         if ($data) {
             return view('show', compact('title', 'data'));
         } else {
@@ -80,7 +79,7 @@ class Problem extends Base
         $problemModel = new ProblemModel();
         $data = $problemModel->deProblem($id);
 
-        if ($data == 'success') {
+        if ('success' == $data) {
             $this->success('删除成功', 'problem/index');
         }
 
