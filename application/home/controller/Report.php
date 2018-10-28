@@ -9,10 +9,11 @@ use think\Db;
 class Report extends Base
 {
     /*
-     * 日报列表
+     * 导入日报
      */
     public function index()
     {
+
     }
 
     /*
@@ -22,44 +23,10 @@ class Report extends Base
     {
         $user_id = User::get(session('user')->id)->user_id;
         if (!empty($user_id)) {
-            $user_id = session('user')->id;
-            // 先找到当前用户最后一篇日报时间
-            $end_time_p = Db::name('user_pjournal')
-                ->alias('a')
-                ->join('pjournal b', 'a.pjournal_id = b.id')
-                ->where('a.user_id', '=', $user_id)
-                ->order('b.id', 'desc')
-                ->limit('0', '1')
-                ->field('create_times')
-                ->find();
-            $end_time_t = Db::name('user_tjournal')
-                ->alias('a')
-                ->join('tjournal b', 'a.tjournal_id = b.id')
-                ->where('a.user_id', '=', $user_id)
-                ->order('b.id', 'desc')
-                ->limit('0', '1')
-                ->field('create_times')
-                ->find();
-            // 两个表均存在时间
-            if (!empty($end_time_p) && !empty($end_time_t)) {
-                // 判断哪个时间最新
-                if (strtotime($end_time_p['create_times']) > strtotime($end_time_t['create_times'])) {
-                    $time = $end_time_p['create_times'];
-                // 如果两者相等
-                } elseif (strtotime($end_time_p['create_times']) == strtotime($end_time_t['create_times'])) {
-                    $time = $end_time_p['create_times'];
-                } else {
-                    $time = $end_time_t['create_times'];
-                }
-                // 如果只是计划表存在时间
-            } elseif (!empty($end_time_p)) {
-                $time = $end_time_p['create_times'];
-            // 如果只是临时表存在时间
-            } elseif (!empty($end_time_t)) {
-                $time = $end_time_p['create_times'];
-            } else {
-                $time = '';
-            }
+            $userModel = new User();
+            $lastTime = $userModel->getLastTime();
+            $time = date('Y-m-d H:i:s', $lastTime);
+
             $title = '编写日报';
 
             return view('in', compact('title', 'time'));

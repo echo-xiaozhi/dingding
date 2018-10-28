@@ -52,4 +52,21 @@ class UserPjournal extends Model
     {
         return $this->alias('a')->join('pjournal b', 'a.pjournal_id = b.id')->where('a.user_id', 'eq', $user_id)->select();
     }
+
+    /*
+     * 找到当前用户数据库最后一篇日报时间
+     */
+    public function getPjournalLastTime()
+    {
+        $userId = session('user')->id;
+        $endTime = $this->alias('a')
+            ->join('pjournal b', 'a.pjournal_id = b.id')
+            ->where('a.user_id', 'eq', $userId)
+            ->order('b.id', 'desc')
+            ->limit('0', '1')
+            ->field('b.unix_time')
+            ->find();
+
+        return $endTime;
+    }
 }

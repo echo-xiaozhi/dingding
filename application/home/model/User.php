@@ -95,6 +95,27 @@ class User extends Model
     }
 
     /*
+     * 找到当前用户数据库日报最后时间
+     */
+    public function getLastTime()
+    {
+        // 先找到当前用户最后一篇日报时间
+        $userPjournalModel = new UserPjournal();
+        // 计划任务最后一篇日报时间
+        $pjournalEndTime = $userPjournalModel->getPjournalLastTime(); // 计划表最后时间
+        $userTjournalModel = new UserTjournal();
+        $tjournalEndTime = $userTjournalModel->getTjournalLastTime(); // 临时表最后时间
+        // 两个表均存在时间
+        if (!empty($pjournalEndTime) && !empty($tjournalEndTime)) {
+            $time = ($pjournalEndTime['unix_time'] > $tjournalEndTime['unix_time']) ? $pjournalEndTime['unix_time'] : (($pjournalEndTime['unix_time'] == $tjournalEndTime['unix_time']) ? $pjournalEndTime['unix_time'] : $tjournalEndTime['unix_time']);
+            return $time;
+        }
+
+        $time = isset($pjournalEndTime['unix_time']) ? $pjournalEndTime['unix_time'] : (isset($tjournalEndTime['unix_time']) ? $tjournalEndTime['unix_time'] : '');
+        return $time;
+    }
+
+    /*
      * 修改用户头像
      */
     public function setUserImg($file)
