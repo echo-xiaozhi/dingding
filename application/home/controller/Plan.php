@@ -2,9 +2,7 @@
 
 namespace app\home\controller;
 
-use think\Db;
 use app\home\model\Plan as PlanModel;
-use app\home\model\User;
 
 class Plan extends Base
 {
@@ -14,21 +12,8 @@ class Plan extends Base
     public function index()
     {
         $title = '下周任务列表';
-        $user_id = session('user')->id;
-        // 获取当前时间，获取下周任务
-        $time = date('Y-m-d'); //当前时间
-        $lastday = date('Y-m-d', strtotime("$time Sunday")); // 本周最后一天时间
-        $first = date('Y-m-d', strtotime("$lastday - 6 days")); // 本周第一天
-        $next = date('Y-m-d', strtotime("$lastday + 1 day")); // 下周第一天
-        $times = strtotime($lastday);
-        // 获取任务
-        $data = Db::name('user_plan')
-            ->alias('a')
-            ->join('plan b', 'a.plan_id = b.id')
-            ->where('a.user_id', '=', $user_id)
-            ->where('plan_time', '>=', $times)
-            ->order('b.id', 'desc')
-            ->paginate(10);
+        $planModel = new PlanModel();
+        $data = $planModel->getPlan();
         // 渲染
         return view('index', compact('title', 'data'));
     }
@@ -46,27 +31,13 @@ class Plan extends Base
     /*
      * 新增任务行为
      */
-    public function add($id)
+    public function add($user_id)
     {
         if (request()->isPost()) {
             $data = input('post.');
             $file = request()->file('complete');
-            $upload = new Report();
-            $data['complete'] = $upload->upload($file);
-
-            $time = date('Y-m-d'); //当前时间
-            $lastday = date('Y-m-d', strtotime("$time Sunday")); // 本周最后一天时间
-            $next = date('Y-m-d', strtotime("$lastday + 1 day")); // 下周第一天
-            $times = strtotime($next);
-            $data['plan_time'] = $times;
-            // 写入plan表
-            $plan_id = PlanModel::insert($data, false, true);
-            // 写入关联表 user_plan
-            $user_data = [
-                'user_id' => $id,
-                'plan_id' => $plan_id,
-            ];
-            Db::name('user_plan')->insert($user_data);
+            $planModel = new PlanModel();
+            $planModel->addPlan($user_id, $data, $file);
             $this->success('添加成功', 'plan/index');
         } else {
             $this->error('错误操作，3秒返回', 'plan/create');
@@ -80,13 +51,8 @@ class Plan extends Base
     {
         $title = '任务详情';
         // 判断当前用户有没有权限操作这篇文章
-        $user_id = session('user')->id;
-        $data = Db::name('user_plan')
-            ->alias('a')
-            ->join('plan b', 'a.plan_id = b.id')
-            ->where('a.user_id', 'eq', $user_id)
-            ->where('b.id', 'eq', $id)
-            ->find();
+        $planModel = new PlanModel();
+        $data = $planModel->showPlan($id);
         if ($data) {
             return view('show', compact('title', 'data'));
         } else {
@@ -101,16 +67,14 @@ class Plan extends Base
     {
         $data = input('post.');
         $file = request()->file('complete');
-        if ($file) {
-            $upload = new Report();
-            $data['complete'] = $upload->upload($file);
+        $planModel = new PlanModel();
+        $data = $planModel->editPlan($id, $data, $file);
+
+        if ('success' == $data) {
+            $this->success('修改成功', 'plan/index');
         }
-        $where = [
-            'id' => $id,
-        ];
-        // 写入plan表
-        PlanModel::update($data, $where);
-        $this->success('修改成功', 'plan/index');
+
+        $this->error($data, 'plan/index');
     }
 
     /*
@@ -118,20 +82,13 @@ class Plan extends Base
      */
     public function delete($id)
     {
-        // 判断当前用户有没有权限操作这篇文章
-        $user_id = session('user')->id;
-        $data = Db::name('user_plan')
-            ->alias('a')
-            ->join('plan b', 'a.plan_id = b.id')
-            ->where('a.user_id', 'eq', $user_id)
-            ->where('b.id', 'eq', $id)
-            ->find();
-        if ($data) {
-            PlanModel::destroy($id);
-            Db::name('user_plan')->where('id', 'eq', $data['id'])->delete();
+        $planModel = new PlanModel();
+        $data = $planModel->dePlan($id);
+
+        if ('success' == $data) {
             $this->success('删除成功', 'plan/index');
-        } else {
-            $this->error('您没有权限操作此任务', 'plan/index');
         }
+
+        $this->error($data);
     }
 }
