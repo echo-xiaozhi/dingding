@@ -95,4 +95,23 @@ class Problem extends Model
 
         return '您没有权限删除此任务';
     }
+
+    /*
+     * 获取用户本月所有问题
+     */
+    public function getMonthProblem()
+    {
+        $monthFirst = Cache::get('monthFirst');
+        $monthLast = Cache::get('monthLast');
+        $userId = session('user')->id;
+
+        $data = $this->alias('a')
+            ->join('user_problem b', 'a.id = b.problem_id')
+            ->where('b.user_id', 'eq', $userId)
+            ->where('a.create_times', '>=', $monthFirst)
+            ->where('a.create_times', '<=', $monthLast)
+            ->select();
+
+        return $data;
+    }
 }

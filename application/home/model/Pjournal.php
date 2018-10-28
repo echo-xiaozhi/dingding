@@ -3,6 +3,7 @@
 namespace app\home\model;
 
 use app\Upload\Upload;
+use think\Cache;
 use think\Model;
 
 class Pjournal extends Model
@@ -57,6 +58,7 @@ class Pjournal extends Model
         ];
 
         $result = self::update($data, $where);
+
         return $result;
     }
 
@@ -74,5 +76,43 @@ class Pjournal extends Model
 
             return $result;
         }
+    }
+
+    /*
+     * 获取用户本周计划任务
+     */
+    public function getWeekPjournal()
+    {
+        $weekFirst = Cache::get('weekFirst');
+        $weekLast = Cache::get('weekLast');
+        $userId = session('user')->id;
+
+        $data = $this->alias('a')
+            ->join('user_pjournal b', 'a.id = b.pjournal_id')
+            ->where('b.user_id', 'eq', $userId)
+            ->where('a.unix_time', '>=', $weekFirst)
+            ->where('a.unix_time', '<=', $weekLast)
+            ->select();
+
+        return $data;
+    }
+
+    /*
+     * 获取用户本月计划任务
+     */
+    public function getMonthPjournal()
+    {
+        $monthFirst = Cache::get('monthFirst');
+        $monthLast = Cache::get('monthLast');
+        $userId = session('user')->id;
+
+        $data = $this->alias('a')
+            ->join('user_pjournal b', 'a.id = b.pjournal_id')
+            ->where('b.user_id', 'eq', $userId)
+            ->where('a.unix_time', '>=', $monthFirst)
+            ->where('a.unix_time', '<=', $monthLast)
+            ->select();
+
+        return $data;
     }
 }

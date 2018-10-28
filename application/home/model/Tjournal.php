@@ -3,6 +3,7 @@
 namespace app\home\model;
 
 use think\Model;
+use think\Cache;
 
 class Tjournal extends Model
 {
@@ -56,6 +57,7 @@ class Tjournal extends Model
         ];
 
         $result = self::update($data, $where);
+
         return $result;
     }
 
@@ -73,5 +75,43 @@ class Tjournal extends Model
 
             return $result;
         }
+    }
+
+    /*
+    * 获取用户本周计划任务
+    */
+    public function getWeekTjournal()
+    {
+        $weekFirst = Cache::get('weekFirst');
+        $weekLast = Cache::get('weekLast');
+        $userId = session('user')->id;
+
+        $data = $this->alias('a')
+            ->join('user_tjournal b', 'a.id = b.tjournal_id')
+            ->where('b.user_id', 'eq', $userId)
+            ->where('a.unix_time', '>=', $weekFirst)
+            ->where('a.unix_time', '<=', $weekLast)
+            ->select();
+
+        return $data;
+    }
+
+    /*
+     * 获取用户本月临时任务
+     */
+    public function getMonthTjournal()
+    {
+        $monthFirst = Cache::get('monthFirst');
+        $monthLast = Cache::get('monthLast');
+        $userId = session('user')->id;
+
+        $data = $this->alias('a')
+            ->join('user_tjournal b', 'a.id = b.tjournal_id')
+            ->where('b.user_id', 'eq', $userId)
+            ->where('a.unix_time', '>=', $monthFirst)
+            ->where('a.unix_time', '<=', $monthLast)
+            ->select();
+
+        return $data;
     }
 }

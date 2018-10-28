@@ -99,4 +99,22 @@ class Plan extends Model
 
         return '您没有权限删除此任务';
     }
+
+    /*
+     * 获取用户下周计划
+     */
+    public function nextWeekPlan()
+    {
+        $user_id = session('user')->id;
+        $nextWeekFirst = Cache::get('nextWeekFirst');
+
+        $data = $this->alias('a')
+            ->join('user_plan b', 'a.id = b.plan_id')
+            ->where('b.user_id', 'eq', $user_id)
+            ->where('a.plan_time', '>=', $nextWeekFirst)
+            ->order('a.id', 'desc')
+            ->select();
+
+        return $data;
+    }
 }
