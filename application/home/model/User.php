@@ -98,7 +98,6 @@ class User extends Model
      */
     public function setUserImg($file)
     {
-
         $upload = new Upload();
         $user_img = $upload->upload($file);
         $user_id = session('user')->id;
@@ -146,6 +145,7 @@ class User extends Model
         if ($result) {
             return 'success';
         }
+
         return '操作错误';
     }
 

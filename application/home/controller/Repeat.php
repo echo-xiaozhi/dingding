@@ -16,7 +16,7 @@ class Repeat extends Base
             $data = input('post.');
             $userModel = new User();
             $result = $userModel->editPassword($id, $data);
-            if ($result == 'success') {
+            if ('success' == $result) {
                 $this->success('修改成功', '/user');
             }
 
