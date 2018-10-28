@@ -13,20 +13,8 @@ class Problem extends Base
     public function index()
     {
         $title = '问题列表';
-        $user_id = session('user')->id;
-        // 获取当前时间，获取下周任务
-        $time = date('Y-m-d'); //当前时间
-        $lastday = date('Y-m-d', strtotime("$time Sunday")); // 本周最后一天时间
-        $first = date('Y-m-d', strtotime("$lastday - 6 days")); // 本周第一天
-        $first = strtotime($first);
-        $end = strtotime($lastday);
-        $data = Db::name('user_problem')
-            ->alias('a')
-            ->join('problem b', 'a.problem_id = b.id')
-            ->where('create_times', '>=', $first)
-            ->where('create_times', '<=', $end)
-            ->where('a.user_id', 'eq', $user_id)
-            ->paginate(10);
+        $problemModel = new ProblemModel();
+        $data = $problemModel->getProblem();
 
         return view('index', compact('title', 'data'));
     }
@@ -47,16 +35,9 @@ class Problem extends Base
     public function add()
     {
         $data = input('post.');
-        $user_id = session('user')->id;
-        $data['create_times'] = time();
-        // 写入问题表
-        $problem_id = ProblemModel::insert($data, false, true);
-        // 写入关联表
-        $user_data = [
-            'user_id' => $user_id,
-            'problem_id' => $problem_id,
-        ];
-        Db::name('user_problem')->insert($user_data);
+        $problemModel = new ProblemModel();
+        $problemModel->addProblem($data);
+
         $this->success('添加成功', 'problem/index');
     }
 
@@ -66,12 +47,13 @@ class Problem extends Base
     public function edit($id)
     {
         $data = input('post.');
-        $where = [
-            'id' => $id,
-        ];
-        // 写入plan表
-        ProblemModel::update($data, $where);
-        $this->success('修改成功', 'problem/index');
+        $problemModel = new ProblemModel();
+        $data = $problemModel->editProblem($id, $data);
+        if ($data == 'success') {
+            $this->success('修改成功', 'problem/index');
+        }
+
+        $this->error($data, 'problem/index');
     }
 
     /*
@@ -80,14 +62,9 @@ class Problem extends Base
     public function show($id)
     {
         $title = '问题详情';
-        // 判断当前用户有没有权限操作这篇文章
-        $user_id = session('user')->id;
-        $data = Db::name('user_problem')
-            ->alias('a')
-            ->join('problem b', 'a.problem_id = b.id')
-            ->where('a.user_id', 'eq', $user_id)
-            ->where('b.id', 'eq', $id)
-            ->find();
+
+       $problemModel = new ProblemModel();
+       $data = $problemModel->showProblem($id);
         if ($data) {
             return view('show', compact('title', 'data'));
         } else {
@@ -100,20 +77,13 @@ class Problem extends Base
      */
     public function delete($id)
     {
-        // 判断当前用户有没有权限操作这篇文章
-        $user_id = session('user')->id;
-        $data = Db::name('user_problem')
-            ->alias('a')
-            ->join('problem b', 'a.problem_id = b.id')
-            ->where('a.user_id', 'eq', $user_id)
-            ->where('b.id', 'eq', $id)
-            ->find();
-        if ($data) {
-            ProblemModel::destroy($id);
-            Db::name('user_problem')->where('id', 'eq', $data['id'])->delete();
+        $problemModel = new ProblemModel();
+        $data = $problemModel->deProblem($id);
+
+        if ($data == 'success') {
             $this->success('删除成功', 'problem/index');
-        } else {
-            $this->error('您没有权限操作此任务', 'problem/index');
         }
+
+        $this->error($data, 'problem/index');
     }
 }
