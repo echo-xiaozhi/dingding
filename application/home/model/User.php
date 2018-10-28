@@ -123,6 +123,33 @@ class User extends Model
     }
 
     /*
+     * 修改用户密码
+     */
+    public function editPassword($id, $data)
+    {
+        $user = self::get($id);
+        if ($user['password'] != md5($data['yuan_password'])) {
+            return '原密码不正确，请重新输入';
+        }
+
+        if ($data['password'] != $data['reset_password']) {
+            return '重复输入密码不一致';
+        }
+
+        $data = [
+            'password' => md5($data['password']),
+        ];
+        $where = [
+            'id' => $id,
+        ];
+        $result = self::update($data, $where);
+        if ($result) {
+            return 'success';
+        }
+        return '操作错误';
+    }
+
+    /*
      * 绑定钉钉
      */
     public function bindDing($code)
