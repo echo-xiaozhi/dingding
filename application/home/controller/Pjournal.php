@@ -56,9 +56,15 @@ class Pjournal extends Base
         $pjournalModel = new PjournalModel();
         $data = $pjournalModel->dePjournal($id);
         if ($data) {
-            $this->success('删除成功', 'pjournal/index');
+            return [
+                'error' => 0,
+                'msg' => '删除成功'
+            ];
         } else {
-            $this->error('您没有权限操作此任务', 'pjournal/index');
+            return [
+                'error' => 1,
+                '您没有权限操作此任务'
+            ];
         }
     }
 }

@@ -75,6 +75,24 @@
             }
         });
     }
+
+    // 删除操作
+    $('.delete').click(function () {
+        var url = $(this).val();
+        if ( confirm('确定要删除吗？')) {
+            $.ajax({
+                url: url,
+                type: 'get',
+                success: function (data) {
+                    if (data.error != 0) {
+                        alert(data.msg);
+                    }
+                    window.location.reload()
+                }
+            })
+        }
+
+    })
 </script>
 <!-- 时间控件 -->
 <script>

@@ -56,9 +56,15 @@ class Tjournal extends Base
         $data = $tjournalModel->deTjournal($id);
 
         if ($data) {
-            $this->success('删除成功', 'tjournal/index');
+            return [
+                'error' => 0,
+                'msg' => '删除成功'
+            ];
         } else {
-            $this->error('您没有权限操作此任务', 'tjournal/index');
+            return [
+                'error' => 1,
+                '您没有权限操作此任务'
+            ];
         }
     }
 }

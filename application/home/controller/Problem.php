@@ -80,9 +80,15 @@ class Problem extends Base
         $data = $problemModel->deProblem($id);
 
         if ('success' == $data) {
-            $this->success('删除成功', 'problem/index');
+            return [
+                'error' => 0,
+                'msg' => '删除成功',
+            ];
         }
 
-        $this->error($data, 'problem/index');
+        return [
+            'error' => 1,
+            'msg' => $data,
+        ];
     }
 }

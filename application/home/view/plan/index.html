@@ -30,7 +30,7 @@
                                 <td>{$vo.end_time}</td>
                                 <td>
                                     <a href="{:url('home/plan/show',['id' => $vo.id])}" class="btn btn-success">查看</a>
-                                    <a href="{:url('home/plan/delete',['id' => $vo.id])}" class="btn btn-danger">删除</a>
+                                    <button value="{:url('home/plan/delete',['id' => $vo.id])}" class="btn btn-danger delete">删除</button>
                                 </td>
                             </tr>
                             {/volist}

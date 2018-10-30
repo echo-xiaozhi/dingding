@@ -28,7 +28,7 @@
                                 <td>{$vo.complate}</td>
                                 <td>
                                     <a href="{:url('home/tjournal/show',['id' => $vo['id']])}" class="btn btn-success">查看</a>
-                                    <a href="{:url('home/tjournal/delete',['id' => $vo['id']])}" class="btn btn-danger">删除</a>
+                                    <button value="{:url('home/tjournal/delete',['id' => $vo['id']])}" class="btn btn-danger delete">删除</button>
                                 </td>
                             </tr>
                             {/volist}

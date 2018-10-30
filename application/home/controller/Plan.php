@@ -86,9 +86,15 @@ class Plan extends Base
         $data = $planModel->dePlan($id);
 
         if ('success' == $data) {
-            $this->success('删除成功', 'plan/index');
+            return [
+                'error' => 0,
+                'msg' => '删除成功',
+            ];
         }
 
-        $this->error($data);
+        return [
+            'error' => 1,
+            'msg' => $data,
+        ];
     }
 }

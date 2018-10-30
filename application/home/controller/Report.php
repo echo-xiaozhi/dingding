@@ -30,10 +30,13 @@ class Report extends Base
     {
         if (request()->isPost()) {
             $data = input('post.');
-            // 逻辑
-            $userModel = new User();
-            $userModel->insertTask($data);
-            $this->success('导入成功', '/pjournal/index');
+            if ($data) {
+                // 逻辑
+                $userModel = new User();
+                $userModel->insertTask($data);
+                $this->success('导入成功', '/pjournal/index', '', 1);
+            }
+            $this->error('没有提交任何数据', '/report/times', '', 1);
         } else {
             $this->error('错误操作，请返回重新操作', 'home/report/times');
         }
