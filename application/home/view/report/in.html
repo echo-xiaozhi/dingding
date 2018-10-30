@@ -1,32 +1,80 @@
-{layout name='layout/main'}
+{layout name="layout/main"}
+<style>
+    .table input{
+        width: 100px;
+    }
+    .table input[type="radio"]{
+        width: auto;
+    }
+    .table .w160{
+        width: 160px;
+    }
+</style>
 <div class="main-content">
     <div class="container-fluid">
-        <h3 class="page-title">导入日报</h3>
+        <h3 class="page-title">导入本周日报</h3>
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
                 <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">计：代表计划任务；临：代表临时任务</h3>
+                    </div>
                     <div class="panel-body">
-                        <div class="form-group">
-                            <form action="{:url('home/report/add')}" method="post">
-                                <label for="">选择时间（精确到时分）<span style="color: red;">时间段不能超过180天</span></label>
-                                {if condition="empty($time)"}
-                                <input type="text" id="start_time" name="start_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
-                                --
-                                <input type="text" id="end_time" name="end_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
-                                <!--<input type="datetime-local" name="start_time"> &#45;&#45; <input type="datetime-local" name="end_time">-->
-                                {else/}
-                                <input type="text" value="{$time}" id="start_time" name="start_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
-                                --
-                                <input type="text" id="end_time" name="end_time" class="form_datetime" data-date-format="yyyy-mm-dd hh:ii">
-                                {/if}
-                                <br>
-                                <label for="">请输入想要获取日报的条数</label>
-                                <input type="text" name="num" value="10">
-                                <button class="btn btn-success">提交</button>
-                            </form>
-                        </div>
+                        <form action="{:url('home/report/addend')}" method="post" enctype="multipart/form-data">
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>任务名称</th>
+                                    <th>任务属性</th>
+                                    <th>附件（完成输出物）</th>
+                                    <th>计划开始时间</th>
+                                    <th>计划结束时间</th>
+                                    <th>优先级</th>
+                                    <th>完成度</th>
+                                    <th>参与人</th>
+                                    <th>核查人</th>
+                                    <th>问题备注</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {volist name="userData" id="vo"}
+                                <tr>
+                                    <!-- 创建时间、负责人 -->
+                                    <input type="hidden" name="create_time[]" value="{$vo.create_time}" />
+                                    <input type="hidden" name="creator_name[]" value="{$vo.creator_name}">
+                                    <td class="w160">
+                                        {$vo.title}
+                                        <input type="hidden" value="{$vo.title}" name="title[]" >
+                                    </td>
+                                    <td>
+                                        <input type="radio" name="shuxing{$i-1}" value="0" checked>计
+                                        <input type="radio" name="shuxing{$i-1}" value="1">临
+                                    </td>
+                                    <td><input type="file" name="complete{$i-1}"></td>
+                                    <td><input type="date" name="time_start[]"></td>
+                                    <td><input type="date" name="time_end[]"></td>
+                                    <td>
+                                        <input type="radio" name="priority{$i-1}" value="A" checked>A
+                                        <input type="radio" name="priority{$i-1}" value="B">B
+                                        <input type="radio" name="priority{$i-1}" value="C">C
+                                        <input type="radio" name="priority{$i-1}" value="D">D
+                                        <input type="radio" name="priority{$i-1}" value="E">E
+                                    </td>
+                                    <td><input type="text" name="complate[]" value="" placeholder="例如10%"></td>
+                                    <td><input type="text" name="partake[]" value="" placeholder="其他成员"></td>
+                                    <td><input type="text" name="check[]" value="" placeholder="核查人"></td>
+                                    <td><textarea name="remark[]" id="" cols="30" rows="3" placeholder="问题描述"></textarea></td>
+                                </tr>
+                                {/volist}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-success">提交</button>
+                        </form>
                     </div>
                 </div>
+                <!-- END TABLE STRIPED -->
             </div>
         </div>
     </div>

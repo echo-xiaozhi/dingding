@@ -2,6 +2,7 @@
 
 namespace app\home\model;
 
+use think\Cache;
 use think\Model;
 use app\Upload\Upload;
 use think\Validate;
@@ -108,10 +109,12 @@ class User extends Model
         // 两个表均存在时间
         if (!empty($pjournalEndTime) && !empty($tjournalEndTime)) {
             $time = ($pjournalEndTime['unix_time'] > $tjournalEndTime['unix_time']) ? $pjournalEndTime['unix_time'] : (($pjournalEndTime['unix_time'] == $tjournalEndTime['unix_time']) ? $pjournalEndTime['unix_time'] : $tjournalEndTime['unix_time']);
+
             return $time;
         }
 
         $time = isset($pjournalEndTime['unix_time']) ? $pjournalEndTime['unix_time'] : (isset($tjournalEndTime['unix_time']) ? $tjournalEndTime['unix_time'] : '');
+
         return $time;
     }
 
@@ -200,6 +203,167 @@ class User extends Model
         session('user', $result);
 
         return 'success';
+    }
+
+    /*
+     * 获取用户日志，去重返回
+     */
+    public function unqiueData($userId)
+    {
+        $time = $this->getLastTime();
+        //判断时间是否有时间 有-》获取时间到当前时间日报；无-》获取本周一的时间到当前时间
+        if ($time) {
+            $startTime = ($time+60)*1000;
+        } else {
+            $startTime = (Cache::get('weekFirst')+60)*1000;
+        }
+        $endTime = time()*1000;
+        // 获取日报
+        $accessTokenUser = AccessToken::get(['status' => 1])->access_token;
+        $userDataString = $this->getDay($accessTokenUser, $startTime, $endTime, $userId, '50');
+        $userData = json_decode(strstr($userDataString, '{'), true);
+        // 获取日报数组
+        $userData = $userData['result']['data_list'];
+
+        $endUserData = collection([]);
+        foreach ($userData as $key => $val) {
+//                dump($val);
+            $endTask = $val['contents'][0]['value'];
+            $noEndTask = $val['contents'][1]['value'];
+            $coordinateTask = $val['contents'][2]['value'];
+            // 1 2 都不为空
+            if (!empty($noEndTask) && !empty($coordinateTask)) {
+                $titleString = $endTask . '；' . $noEndTask . '；' . $coordinateTask;
+            }
+            // 1 不空 2 空
+            if (!empty($noEndTask) && empty($coordinateTask)) {
+                $titleString = $endTask . '；' . $noEndTask;
+            }
+            // 1 空 2 不空
+            if (empty($noEndTask) && !empty($coordinateTask)) {
+                $titleString = $endTask . '；' . $coordinateTask;
+            }
+            // 1 2 都为空
+            if (empty($noEndTask) && empty($coordinateTask)) {
+                $titleString = $endTask;
+            }
+            $endData = collection([]);
+//                dump($titleString);
+            $data['create_time'] = $val['create_time'];
+            $data['creator_name'] = $val['creator_name'];
+            $data['dept_name'] = $val['dept_name'];
+            if (strpos($titleString, '；')) {
+                $titleData = explode('；', $titleString);
+                $max = count($titleData);
+                for ($i = 0; $i < $max; $i++) {
+                    $titleList = $titleData[$i];
+                    $data['title'] = $titleList;
+                    $endData->push($data);
+                }
+            } else {
+                $data['title'] = $titleString;
+                $endData->push($data);
+            }
+            $endUserData->push($endData->toArray());
+        }
+        // 组成一个数组 用来去重
+        $unqiueData = collection([]);
+        foreach ($endUserData->toArray() as $key => $val) {
+            $max = count($val);
+            for ($i = 0; $i < $max; $i++) {
+                $unqiueData->push($val[$i]);
+            }
+        }
+        // 最终数组
+        $result = $this->removeDuplicate($unqiueData->toArray());
+
+        return $result;
+    }
+    /*
+     * 导入
+     */
+    public function insertTask($data)
+    {
+        $userId = session('user')->id;
+        // 逻辑
+        for ($i = 0; $i < count($data['create_time']); ++$i) {
+            //上传文件
+            $file = request()->file('complete'.$i);
+            if ($file) {
+                $upload = new Upload();
+                $complete = $upload->upload($file); //输出物
+            } else {
+                $complete = '';
+            }
+            $create_times = date('Y-m-d H:i:s', $data['create_time'][$i]/1000); //钉钉发布时间
+            $charge = $data['creator_name'][$i]; //负责人
+            $title = $data['title'][$i]; //任务名称
+//                $complete = $data['complete'][$i]; //输出物
+            $time_start = strtotime($data['time_start'][$i]); //任务开始时间
+            $time_end = strtotime($data['time_end'][$i]); //任务结束时间
+            $priority = $data['priority'.$i]; //优先级
+            $complate = $data['complate'][$i]; //完成度
+            $partake = $data['partake'][$i]; //参与人
+            $check = $data['check'][$i]; //核查人
+            $remark = $data['remark'][$i]; //问题备注
+            $datas = [
+                'title' => $title,
+                'complete' => $complete,
+                'timestart' => $time_start,
+                'timend' => $time_end,
+                'priority' => $priority,
+                'complate' => $complate,
+                'charge' => $charge,
+                'partake' => $partake,
+                'check' => $check,
+                'remark' => $remark,
+                'create_times' => $create_times,
+                'unix_time' => strtotime($create_times),
+            ];
+            // 0计划任务 1临时任务
+            if (1 == $data['shuxing'.$i]) {
+                // 写入临时任务表 tjournal
+                $tjournalModel = new Tjournal();
+                $tjournal_id = $tjournalModel->insert($datas, false, true);
+//                $tjournal_id = Db::name('tjournal')->insert();
+                // 写入关联表
+                $user_data = [
+                    'user_id' => $userId,
+                    'tjournal_id' => $tjournal_id,
+                ];
+                $userTjournalModel = new UserTjournal();
+                $userTjournalModel->insert($user_data);
+            } else {
+                // 写入计划任务表 pjournal
+                $pjournalModel = new Pjournal();
+                $pjournal_id = $pjournalModel->insert($datas, false, true);
+                // 写入关联表
+                $user_data = [
+                    'user_id' => $userId,
+                    'pjournal_id' => $pjournal_id,
+                ];
+                $userPjournalModel = new UserPjournal();
+                $userPjournalModel->insert($user_data);
+            }
+        }
+    }
+    /*
+    * 数组去重方法
+    */
+    public function removeDuplicate($array){
+        $result = array();
+        foreach ($array as $key => $value) {
+            $has = false;
+            foreach($result as $val){
+                if($val['title']==$value['title']){
+                    $has = true;
+                    break;
+                }
+            }
+            if(!$has)
+                $result[]=$value;
+        }
+        return $result;
     }
 
     /*
@@ -353,6 +517,45 @@ class User extends Model
         // 关闭
         curl_close($curl);
 
+        return $data;
+    }
+
+    /*
+     * 获取当前用户日报
+     */
+    protected function getDay($access_token = '', $start_time = '', $end_time = '', $userid = '', $size = 10, $template_name = '日报', $cursor = 0)
+    {
+        $url = 'https://oapi.dingtalk.com/topapi/report/list?access_token='.$access_token;
+        //初始化
+        $curl = curl_init();
+        $header = array('Content-Type: application/json; charset=utf-8');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL, $url);
+        //设置头文件的信息作为数据流输出
+        curl_setopt($curl, CURLOPT_HEADER, 1);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        //设置post方式提交
+        curl_setopt($curl, CURLOPT_POST, 1);
+        //绕过ssl验证
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 2);
+        //设置post数据
+        $post_data = [
+            'start_time' => $start_time,
+            'end_time' => $end_time,
+            'template_name' => $template_name,
+            'userid' => $userid,
+            'cursor' => $cursor,
+            'size' => $size,
+        ];
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($post_data));
+        //执行命令
+        $data = curl_exec($curl);
+        //关闭URL请求
+        curl_close($curl);
+        //显示获得的数据
         return $data;
     }
 }
