@@ -32,7 +32,7 @@
                             <div class="logo text-center"><img src="/style/img/logo-dark.png" alt="Klorofil Logo"></div>
                             <p class="lead">注册帐号</p>
                         </div>
-                        <form class="form-auth-small" action="{:url('home/login/doregister')}" method="post">
+                        <form class="form-auth-small" id="register">
                             <div class="form-group">
                                 <label for="signin-email" class="control-label sr-only">Username</label>
                                 <input name="username" class="form-control" id="signin-email" value="" placeholder="请输入帐号">
@@ -51,7 +51,7 @@
                                     <!--<span>Remember me</span>-->
                                 <!--</label>-->
                             <!--</div>-->
-                            <button type="submit" class="btn btn-primary btn-lg btn-block">REGISTER</button>
+                            <button value="{:url('home/login/doregister')}" class="btn btn-primary btn-lg btn-block btn-register">REGISTER</button>
                             <div class="bottom">
                                 <span class="helper-text"><i class="fa fa-home"></i> <a href="{:url('home/login/index')}">已有帐号返回登录</a></span>
                             </div>
@@ -73,5 +73,34 @@
 </div>
 <!-- END WRAPPER -->
 </body>
+<script src="/style/vendor/jquery/jquery.min.js"></script>
+<script>
+    $('.btn-register').click(function() {
+        var url = $(this).val();
+        var d = form('#register');
+        $.ajax({
+            url: url,
+            type: 'post',
+            data:  d,
+            success: function (data) {
+                if (data.error != 0) {
+                    alert(data.msg);
+                    window.location.reload();
+                } else {
+                    window.location.href = '/'
+                }
+            }
+        })
+    });
+    function form(id)
+    {
+        var d = {};
+        var t = $(id).serializeArray();
+        $.each(t, function() {
+            d[this.name] = this.value;
+        });
 
+        return d;
+    }
+</script>
 </html>

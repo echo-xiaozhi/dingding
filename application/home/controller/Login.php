@@ -58,31 +58,18 @@ class Login extends Controller
     {
         if (request()->isPost()) {
             $data = input('post.');
-            $result = $this->validate($data, 'User');
-            if (true !== $result) {
-                // 验证失败 输出错误信息
-                $this->error($result, 'login/register');
+            $userModel = new User();
+            $result = $userModel->register($data);
+            if ($result == 'success') {
+                return [
+                    'error' => 0,
+                    'msg' => '',
+                ];
             }
-            $psd = $data['password'];
-            $repsd = $data['repeat_password'];
-            if ($psd != $repsd) {
-                $this->error('两次密码不一致', 'login/register');
-            }
-
-            $user = User::get(['username' => $data['username']]);
-            if (false != $user) {
-                $this->error('用户名已经存在', 'login/register');
-            }
-
-            $data['password'] = md5($data['password']);
-            $result = User::create($data);
-            if ($result) {
-                $users = User::get(['username' => $data['username'], 'password' => $data['password']]);
-                session('user', $users);
-                $this->success('注册成功', '/');
-            } else {
-                $this->error('注册失败', 'login/register');
-            }
+            return [
+                'error' => 1,
+                'msg' => $result,
+            ];
         }
     }
 

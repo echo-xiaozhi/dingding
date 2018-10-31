@@ -206,6 +206,38 @@ class User extends Model
     }
 
     /*
+     * 用户注册
+     */
+    public function register($data)
+    {
+        $validate = validate('User');
+        if (!$validate->check($data)) {
+            // 验证失败 输出错误信息
+            return $validate->getError();
+        }
+        $psd = $data['password'];
+        $repsd = $data['repeat_password'];
+        if ($psd != $repsd) {
+            return '两次密码不一致';
+        }
+
+        $user = self::get(['username' => $data['username']]);
+        if (false != $user) {
+            return '用户名已经存在';
+        }
+
+        $data['password'] = md5($data['password']);
+        $result = self::create($data);
+        if ($result) {
+            $users = self::get(['username' => $data['username'], 'password' => $data['password']]);
+            session('user', $users);
+            return 'success';
+        } else {
+            return '注册失败';
+        }
+    }
+
+    /*
      * 获取用户日志，去重返回
      */
     public function unqiueData($userId)
