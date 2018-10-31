@@ -186,8 +186,8 @@ class User extends Model
     public function login($data)
     {
         $validate = new Validate([
-            ['username', 'require|min:3|max:15', '请输入用户名|不得少于3位|不得大于15位'],
-            ['password', 'require|min:6|max:30', '请输入密码|不得少于6位|不得大于15位'],
+            ['username', 'require|min:3|max:15', '请输入用户名|用户名不得少于3位|用户名不得大于15位'],
+            ['password', 'require|min:6|max:30', '请输入密码|密码不得少于6位|密码不得大于15位'],
         ]);
 
         if (!$validate->check($data)) {

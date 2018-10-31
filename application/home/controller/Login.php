@@ -26,12 +26,20 @@ class Login extends Controller
     {
         if (request()->isPost()) {
             $data = input('post.');
+
             $userModel = new User();
             $result = $userModel->login($data);
             if ('success' == $result) {
-                $this->success('登录成功', 'index/index');
+                return [
+                    'error' => 0,
+                    'msg' => '登录成功',
+                ];
             }
-            $this->error($result, 'index');
+
+            return [
+                'error' => 1,
+                'msg' => $result,
+            ];
         }
     }
 
@@ -84,6 +92,6 @@ class Login extends Controller
     public function logout()
     {
         session('user', null);
-        $this->success('退出成功', 'login/index');
+        $this->redirect('login/index');
     }
 }
