@@ -9,7 +9,7 @@
 <script src="/style/scripts/cropper.js"></script>
 <script>
     $('#dis').click(function () {
-        $('#show').show();
+        $('#upload-file').show();
         $('#dis').hide();
     })
     $('#all').click(function () {
@@ -63,8 +63,8 @@
             type: "post",
             data: file,
             cache: false,
-            contentType: false,
-            processData: false,
+            contentType: false, //不设置内容类型
+            processData: false, //不处理数据
             success: function(data) {
                 if (data.error != 0) {
                     alert(data.msg);
@@ -128,7 +128,69 @@
                 }
             }
         });
+    });
+    // 下周计划提交
+    $('.btn-plan').click(function() {
+        var url = $(this).val();
+        var d = form('#plan');
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: d,
+            success: function (data) {
+                if (data.error != 0) {
+                    alert(data.msg)
+                } else {
+                    window.location.href = '/plan/index'
+                }
+            }
+        });
+    });
+    // 下周计划修改
+    $('.btn-plan-edit').click(function() {
+        var url = $(this).val();
+        var d = form('#plan-edit');
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: d,
+            success: function (data) {
+                if (data.error != 0) {
+                    alert(data.msg)
+                } else {
+                    window.location.href = '/plan/index'
+                }
+            }
+        });
+    });
+    //上传图片
+    $('#upload-file').click(function () {
+        $("#upload-file").on("change", function() {
+            var objUrl = getObjectURL(this.files[0]); //获取图片的路径，该路径不是图片在本地的路径
+            if (objUrl) {
+                upload_img('/plan/uploadimg', '#upload-file');
+            }
+        });
     })
+    //上传头像到服务器
+    function upload_img(url, id,) {
+        var pic = $(id)[0].files[0];
+        var file = new FormData();
+        file.append('image', pic);
+        $.ajax({
+            url: url,
+            type: "post",
+            data: file,
+            cache: false,
+            contentType: false, //不设置内容类型
+            processData: false, //不处理数据
+            success: function(data) {
+                var res = data;
+                $("#file_complete").val(res);
+
+            }
+        });
+    }
     // 获取form表单值
     function form(id)
     {

@@ -29,10 +29,8 @@ class Plan extends Model
     /*
      * 新增任务
      */
-    public function addPlan($user_id, $data, $file)
+    public function addPlan($user_id, $data)
     {
-        $upload = new Upload();
-        $data['complete'] = $upload->upload($file);
         $data['plan_time'] = Cache::get('nextWeekFirst');
         // 写入plan表
         $plan_id = self::insert($data, false, true);
@@ -42,6 +40,7 @@ class Plan extends Model
             'plan_id' => $plan_id,
         ];
         UserPlan::create($user_data);
+        return 'success';
     }
 
     /*
@@ -62,14 +61,10 @@ class Plan extends Model
     /*
      * 修改任务
      */
-    public function editPlan($id, $data, $file)
+    public function editPlan($id, $data)
     {
         $power = $this->showPlan($id);
         if ($power) {
-            if ($file) {
-                $upload = new Upload();
-                $data['complete'] = $upload->upload($file);
-            }
             $where = [
                 'id' => $id,
             ];

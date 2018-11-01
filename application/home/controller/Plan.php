@@ -3,6 +3,7 @@
 namespace app\home\controller;
 
 use app\home\model\Plan as PlanModel;
+use app\Upload\Upload;
 
 class Plan extends Base
 {
@@ -35,12 +36,24 @@ class Plan extends Base
     {
         if (request()->isPost()) {
             $data = input('post.');
-            $file = request()->file('complete');
             $planModel = new PlanModel();
-            $planModel->addPlan($user_id, $data, $file);
-            $this->success('添加成功', 'plan/index');
+            $result = $planModel->addPlan($user_id, $data);
+            if ('success' == $result) {
+                return [
+                    'error' => 0,
+                    'msg' => '',
+                ];
+            }
+
+            return [
+                'error' => 1,
+                'msg' => '添加失败',
+            ];
         } else {
-            $this->error('错误操作，3秒返回', 'plan/create');
+            return [
+                'error' => 1,
+                'msg' => '错误操作',
+            ];
         }
     }
 
@@ -66,15 +79,20 @@ class Plan extends Base
     public function edit($id)
     {
         $data = input('post.');
-        $file = request()->file('complete');
         $planModel = new PlanModel();
-        $data = $planModel->editPlan($id, $data, $file);
+        $data = $planModel->editPlan($id, $data);
 
         if ('success' == $data) {
-            $this->success('修改成功', 'plan/index');
+            return [
+                'error' => 0,
+                'msg' => '',
+            ];
         }
 
-        $this->error($data, 'plan/index');
+        return [
+            'error' => 1,
+            'msg' => $data,
+        ];
     }
 
     /*
@@ -96,5 +114,17 @@ class Plan extends Base
             'error' => 1,
             'msg' => $data,
         ];
+    }
+
+    /*
+     * 单独上传图片返回路径
+     */
+    public function uploadImg()
+    {
+        $file = request()->file('image');
+        $upload = new Upload();
+        $src = $upload->upload($file);
+
+        return $src;
     }
 }
