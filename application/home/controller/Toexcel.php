@@ -100,4 +100,18 @@ class Toexcel extends Base
 
         Custom_Mouth_Excel($name, $mouth_pjournal, $mouth_tjournal, $mouth_problem);
     }
+
+    /*
+     * 判定选择月份的起始时间
+     */
+    protected function getThemMonth($date)
+    {
+        $firstday = date('Y-m-01', strtotime($date)); //月初
+        $lastday = date('Y-m-d', strtotime("$firstday +1 month -1 day"));//月末
+        return [
+            'monthFirstDay' => $firstday,
+            'monthLastDay' => $lastday
+        ];
+    }
+
 }

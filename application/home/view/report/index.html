@@ -1,0 +1,19 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">{$title}</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-body">
+                        <a href="{:url('report/usertime')}" class="btn btn-default">选择时间导入</a> 注：适用于之前<span style="color: #41B314;">没有导入</span>过任何日报 <br/>
+                        <p></p>
+                        <a href="{:url('report/times')}" class="btn btn-success">自动导入</a> 注：适用于之前<span style="color: #41B314;">导入过</span>日报，如果之前导入过，<span style="color: red;">强烈推荐</span>使用此方式导入
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

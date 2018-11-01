@@ -1,0 +1,23 @@
+{layout name="layout/main"}
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">{$title}</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE STRIPED -->
+                <div class="panel">
+                    <div class="panel-body">
+                        <form action="{:url('report/times')}" method="post">
+                            <p style="color: red; font-weight: bold;">注：选择时间，请精确到时分</p>
+                            <p>选择开始时间：<input type="datetime-local" name="start_time"></p>
+                            <p>选择结束时间：<input type="datetime-local" name="end_time"></p>
+                            <p style="color: red">注：开始时间和结束时间不能超过<b>180</b>天（钉钉规定）；如果没有选择时间，默认导入当前系统用户最后一篇日报时间到当前时间的日报；如果当前用户没有任何一篇日报，自动导入本周一到当前时间的日报</p>
+                            <p><button type="submit" class="btn btn-success">提交</button></p>
+                        </form>
+                    </div>
+                </div>
+                <!-- END TABLE STRIPED -->
+            </div>
+        </div>
+    </div>
+</div>

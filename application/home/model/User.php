@@ -231,6 +231,7 @@ class User extends Model
         if ($result) {
             $users = self::get(['username' => $data['username'], 'password' => $data['password']]);
             session('user', $users);
+
             return 'success';
         } else {
             return '注册失败';
@@ -240,19 +241,21 @@ class User extends Model
     /*
      * 获取用户日志，去重返回
      */
-    public function unqiueData($userId)
+    public function unqiueData($userId, $startTime = '', $endTime = '', $count = 50)
     {
-        $time = $this->getLastTime();
-        //判断时间是否有时间 有-》获取时间到当前时间日报；无-》获取本周一的时间到当前时间
-        if ($time) {
-            $startTime = ($time+60)*1000;
-        } else {
-            $startTime = (Cache::get('weekFirst')+60)*1000;
+        if (empty($startTime) && empty($endTime)) {
+            $time = $this->getLastTime();
+            //判断时间是否有时间 有-》获取时间到当前时间日报；无-》获取本周一的时间到当前时间
+            if (!empty($time)) {
+                $startTime = ($time + 60) * 1000;
+            } else {
+                $startTime = (Cache::get('weekFirst') + 60) * 1000;
+            }
+            $endTime = time() * 1000;
         }
-        $endTime = time()*1000;
         // 获取日报
         $accessTokenUser = AccessToken::get(['status' => 1])->access_token;
-        $userDataString = $this->getDay($accessTokenUser, $startTime, $endTime, $userId, '50');
+        $userDataString = $this->getDay($accessTokenUser, $startTime, $endTime, $userId, $count);
         $userData = json_decode(strstr($userDataString, '{'), true);
         // 获取日报数组
         $userData = $userData['result']['data_list'];
@@ -265,15 +268,15 @@ class User extends Model
             $coordinateTask = $val['contents'][2]['value'];
             // 1 2 都不为空
             if (!empty($noEndTask) && !empty($coordinateTask)) {
-                $titleString = $endTask . '；' . $noEndTask . '；' . $coordinateTask;
+                $titleString = $endTask.'；'.$noEndTask.'；'.$coordinateTask;
             }
             // 1 不空 2 空
             if (!empty($noEndTask) && empty($coordinateTask)) {
-                $titleString = $endTask . '；' . $noEndTask;
+                $titleString = $endTask.'；'.$noEndTask;
             }
             // 1 空 2 不空
             if (empty($noEndTask) && !empty($coordinateTask)) {
-                $titleString = $endTask . '；' . $coordinateTask;
+                $titleString = $endTask.'；'.$coordinateTask;
             }
             // 1 2 都为空
             if (empty($noEndTask) && empty($coordinateTask)) {
@@ -287,7 +290,7 @@ class User extends Model
             if (strpos($titleString, '；')) {
                 $titleData = explode('；', $titleString);
                 $max = count($titleData);
-                for ($i = 0; $i < $max; $i++) {
+                for ($i = 0; $i < $max; ++$i) {
                     $titleList = $titleData[$i];
                     $data['title'] = $titleList;
                     $endData->push($data);
@@ -302,7 +305,7 @@ class User extends Model
         $unqiueData = collection([]);
         foreach ($endUserData->toArray() as $key => $val) {
             $max = count($val);
-            for ($i = 0; $i < $max; $i++) {
+            for ($i = 0; $i < $max; ++$i) {
                 $unqiueData->push($val[$i]);
             }
         }
@@ -311,6 +314,7 @@ class User extends Model
 
         return $result;
     }
+
     /*
      * 导入
      */
@@ -327,7 +331,7 @@ class User extends Model
             } else {
                 $complete = '';
             }
-            $create_times = date('Y-m-d H:i:s', $data['create_time'][$i]/1000); //钉钉发布时间
+            $create_times = date('Y-m-d H:i:s', $data['create_time'][$i] / 1000); //钉钉发布时间
             $charge = $data['creator_name'][$i]; //负责人
             $title = $data['title'][$i]; //任务名称
 //                $complete = $data['complete'][$i]; //输出物
@@ -379,22 +383,26 @@ class User extends Model
             }
         }
     }
+
     /*
     * 数组去重方法
     */
-    public function removeDuplicate($array){
+    public function removeDuplicate($array)
+    {
         $result = array();
         foreach ($array as $key => $value) {
             $has = false;
-            foreach($result as $val){
-                if($val['title']==$value['title']){
+            foreach ($result as $val) {
+                if ($val['title'] == $value['title']) {
                     $has = true;
                     break;
                 }
             }
-            if(!$has)
-                $result[]=$value;
+            if (!$has) {
+                $result[] = $value;
+            }
         }
+
         return $result;
     }
 
