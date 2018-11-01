@@ -10,7 +10,7 @@
                         <h3 class="panel-title">新增</h3>
                     </div>
                     <div class="panel-body">
-                        <form action="{:url('home/problem/add', ['id' => session('user')->id])}" method="post">
+                        <form id="problem">
                             <label for="">问题描述</label>
                             <textarea class="form-control" name="problem_info" placeholder="请简单描述问题" rows="4"></textarea>
                             <br>
@@ -29,7 +29,7 @@
                             <label for="">问题解决方案</label>
                             <textarea class="form-control" name="programme" placeholder="请输入问题解决方案" rows="4"></textarea>
                             <br>
-                            <button type="submit" class="btn btn-success">提交</button>
+                            <button value="{:url('home/problem/add', ['id' => session('user')->id])}" class="btn btn-success btn-problem">提交</button>
                             <button type="reset" class="btn btn-danger">重置</button>
                         </form>
                     </div>

@@ -35,9 +35,19 @@ class Problem extends Base
     {
         $data = input('post.');
         $problemModel = new ProblemModel();
-        $problemModel->addProblem($data);
+        $result = $problemModel->addProblem($data);
 
-        $this->success('添加成功', 'problem/index');
+        if ('success' == $result) {
+            return [
+               'error' => 0,
+               'msg' => '',
+            ];
+        }
+
+        return [
+            'error' => 1,
+            'msg' => $result,
+        ];
     }
 
     /*
@@ -49,10 +59,16 @@ class Problem extends Base
         $problemModel = new ProblemModel();
         $data = $problemModel->editProblem($id, $data);
         if ('success' == $data) {
-            $this->success('修改成功', 'problem/index');
+            return [
+                'error' => 0,
+                'msg' => '',
+            ];
         }
 
-        $this->error($data, 'problem/index');
+        return [
+            'error' => 1,
+            'msg' => $data,
+        ];
     }
 
     /*
@@ -67,7 +83,7 @@ class Problem extends Base
         if ($data) {
             return view('show', compact('title', 'data'));
         } else {
-            $this->error('您没有权限操作此任务', 'problem/index');
+            $this->error('别没事越个权玩，你没权限看这个', 'problem/index');
         }
     }
 

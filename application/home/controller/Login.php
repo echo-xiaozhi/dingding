@@ -60,12 +60,13 @@ class Login extends Controller
             $data = input('post.');
             $userModel = new User();
             $result = $userModel->register($data);
-            if ($result == 'success') {
+            if ('success' == $result) {
                 return [
                     'error' => 0,
                     'msg' => '',
                 ];
             }
+
             return [
                 'error' => 1,
                 'msg' => $result,

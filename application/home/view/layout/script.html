@@ -55,7 +55,6 @@
     }
     //上传头像到服务器
     function upimg() {
-        console.log(344)
         var pic = $('#upload')[0].files[0];
         var file = new FormData();
         file.append('image', pic);
@@ -72,6 +71,7 @@
                 }
                 var res = data;
                 $("#resimg").append("<img src='/" + res + "'>")
+                window.location.reload();
             }
         });
     }
@@ -93,6 +93,53 @@
         }
 
     })
+
+    //问题新增
+    $('.btn-problem').click(function () {
+        var url = $(this).val();
+        var d = form('#problem');
+
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: d,
+            success: function (data) {
+                if (data.error != 0) {
+                    alert(data.msg);
+                } else {
+                    window.location.href = '/problem/index.html'
+                }
+            }
+        });
+    });
+    // 问题修改
+    $('.btn-problem-edit').click(function () {
+        var url = $(this).val();
+        var d = form('#problem');
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: d,
+            success: function (data) {
+                if (data.error != 0) {
+                    alert(data.msg);
+                } else {
+                    window.location.href = '/problem/index.html'
+                }
+            }
+        });
+    })
+    // 获取form表单值
+    function form(id)
+    {
+        var d = {};
+        var t = $(id).serializeArray();
+        $.each(t, function() {
+            d[this.name] = this.value;
+        });
+
+        return d;
+    }
 </script>
 <!-- 时间控件 -->
 <script>

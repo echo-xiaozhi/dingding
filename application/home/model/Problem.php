@@ -4,6 +4,7 @@ namespace app\home\model;
 
 use think\Cache;
 use think\Model;
+use think\Validate;
 
 class Problem extends Model
 {
@@ -34,6 +35,11 @@ class Problem extends Model
     {
         $user_id = session('user')->id;
         $data['create_times'] = time();
+        $validate = validate('problem');
+        if (!$validate->check($data)) {
+            // 验证失败 输出错误信息
+            return $validate->getError();
+        }
         // 写入plan表
         $problem_id = self::insert($data, false, true);
         // 写入关联表 user_plan
@@ -42,6 +48,8 @@ class Problem extends Model
             'problem_id' => $problem_id,
         ];
         UserProblem::create($user_data);
+
+        return 'success';
     }
 
     /*
